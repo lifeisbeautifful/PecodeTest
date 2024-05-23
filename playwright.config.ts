@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { testPlanFilter } from "allure-playwright/dist/testplan";
 
 /**
  * Read environment variables from file.
@@ -11,25 +12,45 @@ require('dotenv').config();
  */
 export default defineConfig({
   testDir: './tests',
-  timeout:60000,
+
+  //Set timeout for full test run
+  timeout:100000,
+
+  //Set timeout for expect condition
   expect: { timeout: 10000 },
+
   /* Run tests in files in parallel */
   fullyParallel: true,
+
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
+
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 0 : 0,
+
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 1 : 1,
+
+  //Added allure reporter
+  grep: testPlanFilter(),
+  reporter: [["line"], ["allure-playwright"]],
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  //reporter: 'html',
+
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     //baseURL: 'https://allo.ua/',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry'
+    trace: 'on-first-retry',
+
+    //Added video of failed tests
+    video:{
+      mode:"retain-on-failure",
+      size:{width:640, height:480}
+    },
+    
   },
 
   /* Configure projects for major browsers */

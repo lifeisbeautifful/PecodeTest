@@ -1,16 +1,17 @@
 import {Locator, Page, expect} from "@playwright/test"
 import { BasePage } from "./BasePage";
-import exp from "constants";
+import { Card } from "./components/card";
 
 export class ProductsPage extends BasePage{
     private readonly sortByList:Locator;
-    private readonly modalCardWindow:Locator;
-    arePricesSorted:boolean;
+    private readonly secondDisplayedProduct:Locator;
+    private arePricesSorted:boolean;
+    prodNamesAddedToCard:String[];
     
     constructor(page:Page){
         super(page);
         this.sortByList = page.locator(".sort-by__select");
-        this.modalCardWindow = page.locator(".v-modal__cmp cart-popup checkout_modal")
+        this.secondDisplayedProduct = page.locator("//div[@class='products-layout__container products-layout--grid']/child::div[2]//div[@class='product-card__content']/a");
     }
 
     async sortProductsBy(sortOption:string){
@@ -32,9 +33,18 @@ export class ProductsPage extends BasePage{
         return this.arePricesSorted;
     }
 
-    async addProductToCard(productID:string){
-        await this.page.locator(`//div[@data-product-id=${productID}]/following::button[@title='Купити'][1]`).click();
-        await this.page.getByRole("button", {name:"Продовжити вибір товарів"}).click();
-        await expect(this.modalCardWindow).not.toBeVisible();
+    async addSecondProductToCard(){
+        await this.secondDisplayedProduct.click();
+        await this.page.waitForLoadState();
+
+        let prodName = await this.page.locator("//h1[@class='p-view__header-title']").allTextContents();
+        Card.listOfAddedProdNames.push(prodName[0]);
+
+        let priceText = await this.page.locator("//div[@itemprop='offers']//span[@class='sum']").allInnerTexts();
+        let priceNumber = parseInt(priceText[0].slice(0, priceText[0].length-1).split(' ').join(''));
+        Card.sumOfAddedProdPrices += priceNumber;
+
+        await this.card.buyBtn.click();
+        await this.card.returnLink.click();
     }
 }
