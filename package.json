@@ -5,9 +5,13 @@
   "main": "index.js",
   "scripts": {
     "smoke": "playwright test --config=playwright.config.ts --headed",
+    "smoke:headless": "playwright test --config=playwright.config.ts",
     "smoke:chromium": "playwright test --config=playwright.config.ts --headed --project=chromium",
     "smoke:firefox": "playwright test --config=playwright.config.ts --headed --project=firefox",
-    "smoke:webkit": "playwright test --config=playwright.config.ts --headed --project=webkit --debug"
+    "smoke:webkit": "playwright test --config=playwright.config.ts --headed --project=webkit",
+    "smoke:chromium:debug": "playwright test --config=playwright.config.ts --headed --project=chromium --debug",
+    "smoke:firefox:debug": "playwright test --config=playwright.config.ts --headed --project=firefox --debug",
+    "smoke:webkit:debug": "playwright test --config=playwright.config.ts --headed --project=webkit --debug"
   },
   "keywords": [],
   "author": "",

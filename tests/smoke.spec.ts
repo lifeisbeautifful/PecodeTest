@@ -10,7 +10,7 @@ test.describe("Allo smoke test task", () => {
         await expect(page).toHaveURL(String(process.env.BASE_URL));
     })
 
-    test("Verify if the price filter working correctly", async({page}) => {
+    test("Verify if the price filter working correctly @shouldPass", async({page}) => {
         try{
             let homePage = new HomePage(page);
             await homePage.clickCatalogBtn();
@@ -33,7 +33,7 @@ test.describe("Allo smoke test task", () => {
         }
     })
 
-    test(" Add items to the basket", async({page}) => {
+    test(" Add items to the basket @shouldPass", async({page}) => {
         try{
             let homePage = new HomePage(page);
             await homePage.clickCatalogBtn();
@@ -63,7 +63,7 @@ test.describe("Allo smoke test task", () => {
         }
     })
 
-    test("Search the item", async({page}) => {
+    test("Search the item @shouldPass", async({page}) => {
         try{
             let homePage = new HomePage(page);
             await homePage.performSearch("Sony playstation 5");
@@ -75,7 +75,7 @@ test.describe("Allo smoke test task", () => {
         };
     })
 
-    test("Login using email and password", async({page}) => {
+    test("Login using email and password @shouldFail", async({page}) => {
         try{
             let homePage = new HomePage(page);
             await homePage.clickAccountBtn();
