@@ -1,0 +1,44 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  playwright-test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.45.1-jammy
+    strategy:
+      # if some of matrix job failes, other will continue to run, if we set true, all matrix jobs will be canceled if one of them failed.
+      fail-fast: false
+      matrix:
+        project: [chromium]
+        shardIndex: [1,2,3,4]
+        shardTotal: [4]
+    steps:
+    # This command performs checkout and clone
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "20.14.0"
+       # Create the storage directory and provide write access
+      - run: mkdir -p ./storage && chmod -R 777 ./storage
+      - name: Install dependencies
+      - run: npm install
+      #Step for running tests
+      - name: Run playwright tests
+      - run: npx playwright test --project=${{ matrix.project }} --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+      # Upload test results artifacts
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: report-${{ matrix.shardIndex }}
+          path: playwright-report/
+          retention-days: 7
+
+
