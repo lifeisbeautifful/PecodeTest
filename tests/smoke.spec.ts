@@ -33,7 +33,7 @@ test.describe("Allo smoke test task", () => {
         }
     })
 
-    test(" Add items to the basket @shouldPass", async({page}) => {
+    test.only(" Add items to the basket @shouldPass", async({page}) => {
         try{
             let homePage = new HomePage(page);
             await homePage.clickCatalogBtn();

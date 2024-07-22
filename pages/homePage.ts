@@ -1,6 +1,6 @@
 import {Locator, Page} from "@playwright/test"
 import dotenv from "dotenv"
-import { BasePage } from "./BasePage";
+import { BasePage } from "./basePage";
 dotenv.config()
 
 export class HomePage extends BasePage{
