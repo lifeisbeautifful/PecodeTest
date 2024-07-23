@@ -10,7 +10,7 @@ on:
 jobs:
   playwright-test:
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     container:
       image: mcr.microsoft.com/playwright:v1.44.1-jammy
     strategy:
