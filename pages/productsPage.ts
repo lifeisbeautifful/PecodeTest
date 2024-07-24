@@ -1,5 +1,5 @@
 import {Locator, Page, expect} from "@playwright/test"
-import { BasePage } from "./BasePage";
+import { BasePage } from "./basePage";
 import { Card } from "./components/card";
 
 export class ProductsPage extends BasePage{
