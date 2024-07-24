@@ -10,16 +10,14 @@ on:
 jobs:
   playwright-test:
     timeout-minutes: 60
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.44.1-jammy
     strategy:
       # if some of matrix job failes, other will continue to run, if we set true, all matrix jobs will be canceled if one of them failed.
       fail-fast: false
       matrix:
-        project: [chromium]
-        shardIndex: [1,2,3,4]
-        shardTotal: [4]
+        project: [chromium, firefox]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v2
@@ -27,12 +25,29 @@ jobs:
           node-version: "20.14.0"
       - run: mkdir -p ./storage && chmod -R 777 ./storage
       - run: npm install
-      - run: npx playwright test --project=${{ matrix.project }} --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+      - run: npx playwright test --project=${{ matrix.project }} 
       - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: report-${{ matrix.shardIndex }}
           path: playwright-report/
           retention-days: 7
-
+          
+  merge-reports:
+    name: Merge Reports
+    if: ${{ always() }}
+    # needs meen that we will wait while action in brackets will end
+    needs: [playwright-test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          path: playwright-report/
+      # Run Download Merge HTML dependency
+      - name: Download Merge HTML
+        run: npm install playwright-merge-html-reports --dev
+      # Run HTML Report Merge
+      - name: Run Report Merge
+        run: node tests/smoke.spec.ts-snapshots/mergeReports.js
 
