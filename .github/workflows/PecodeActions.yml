@@ -17,7 +17,8 @@ jobs:
       # if some of matrix job failes, other will continue to run, if we set true, all matrix jobs will be canceled if one of them failed.
       fail-fast: false
       matrix:
-        project: [chromium, firefox]
+        project: [chromium]
+        os: [ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v2
