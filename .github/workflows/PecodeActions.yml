@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: Playwright Tests test edition
 
 on:
   push:
@@ -7,37 +7,57 @@ on:
     branches: [master]
   workflow_dispatch:
 
-jobs:
+env:
+  USER_EMAIL: ${{ secrets.USER_EMAIL }}
+  USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+  NEW_USER_PASSWORD: ${{ secrets.NEW_USER_PASSWORD }}
+  BASE_URL: ${{ secrets.BASE_URL }}
+  ECOMMERCE_URL: ${{ secrets.ECOMMERCE_URL }}
+  ECOMMERCE_TEST_URL: ${{ secrets.ECOMMERCE_TEST_URL }}
+  NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+  STG_BASE_URL: ${{ secrets.STG_BASE_URL }}
+  CRM_API_URL: ${{ secrets.CRM_API_URL }}
+  NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+  
+jobs:   
   playwright-test:
-    timeout-minutes: 60
+    timeout-minutes: 120
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.44.1-jammy
+      image: mcr.microsoft.com/playwright:v1.45.3-jammy
     strategy:
-      # if some of matrix job failes, other will continue to run, if we set true, all matrix jobs will be canceled if one of them failed.
+      # якщо буде тру - то при фейлі одної джоби інші будуть канселитись
       fail-fast: false
+      # те на якому енві будемо ранити
       matrix:
         project: [chromium]
         os: [ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Cache node modules
+        id: cacheStep
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
         with:
-          node-version: "20.14.0"
-      - run: mkdir -p ./storage && chmod -R 777 ./storage
-      - run: npm install
-      - run: npx playwright test --project=${{ matrix.project }} 
-      - uses: actions/upload-artifact@v3
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: npm install
+      - name: Run playwright tests
+        run: npx playwright test api/cart --project=${{ matrix.project }}
+      # create artifact for downloading
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: report-${{ matrix.shardIndex }}
+          name: ${{ matrix.project }} report
           path: playwright-report/
-          retention-days: 7
-          
+      
   merge-reports:
     name: Merge Reports
     if: ${{ always() }}
-    # needs meen that we will wait while action in brackets will end
     needs: [playwright-test]
     runs-on: ubuntu-latest
     steps:
@@ -50,5 +70,4 @@ jobs:
         run: npm install playwright-merge-html-reports --dev
       # Run HTML Report Merge
       - name: Run Report Merge
-        run: node tests/smoke.spec.ts-snapshots/mergeReports.js
-
+        run: node src/modules/utils/mergeReports.js
