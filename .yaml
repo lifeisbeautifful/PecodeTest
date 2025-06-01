@@ -5,6 +5,11 @@ on:
     branches: [master]
   pull-requset:
     branches: [master]
+  workflow_dispatch:
+
+env:
+  BASE_URL: ${{ secrets.BASE_URL }}
+
 jobs:
   playwright:
     name: "Playwright test"
