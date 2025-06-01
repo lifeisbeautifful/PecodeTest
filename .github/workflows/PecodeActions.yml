@@ -24,7 +24,7 @@ jobs:
     timeout-minutes: 120
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.45.3-jammy
+      image: mcr.microsoft.com/playwright:v1.44.1-jammy
     strategy:
       # якщо буде тру - то при фейлі одної джоби інші будуть канселитись
       fail-fast: false
