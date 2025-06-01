@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run playwright tests
-        run: npx playwright test api/cart --project=${{ matrix.project }}
+        run: npx playwright test --project=${{ matrix.project }}
       # create artifact for downloading
       - name: Upload artifact
         uses: actions/upload-artifact@v4
