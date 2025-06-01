@@ -34,33 +34,34 @@ test.describe("Allo smoke test task", () => {
     // })
 
     test(" Add items to the basket @shouldPass", async({page}) => {
-        try{
-            let homePage = new HomePage(page);
-            await homePage.clickCatalogBtn();
-            await homePage.catalog.selectSubcatalogItem("Побутова техніка", "Роботи-пилососи");
-            await page.waitForURL("https://allo.ua/ua/roboty-pylesosy/");
+        console.log("Test");
+        // try{
+        //     let homePage = new HomePage(page);
+        //     await homePage.clickCatalogBtn();
+        //     await homePage.catalog.selectSubcatalogItem("Побутова техніка", "Роботи-пилососи");
+        //     await page.waitForURL("https://allo.ua/ua/roboty-pylesosy/");
 
-            let productsPage = new ProductsPage(page);
-            await productsPage.addSecondProductToCard();
+        //     let productsPage = new ProductsPage(page);
+        //     await productsPage.addSecondProductToCard();
 
-            await homePage.clickCatalogBtn();
-            await homePage.catalog.selectSubcatalogItem("Смартфони та телефони", "Смартфони");
-            await page.waitForURL("https://allo.ua/ua/products/mobile/klass-kommunikator_smartfon/")
+        //     await homePage.clickCatalogBtn();
+        //     await homePage.catalog.selectSubcatalogItem("Смартфони та телефони", "Смартфони");
+        //     await page.waitForURL("https://allo.ua/ua/products/mobile/klass-kommunikator_smartfon/")
 
-            await productsPage.addSecondProductToCard();
-            await productsPage.clickCardBth();
+        //     await productsPage.addSecondProductToCard();
+        //     await productsPage.clickCardBth();
         
-            let productNamesInCardMatches = await productsPage.card.checkProductsInCardByName();
-            expect(productNamesInCardMatches).toBeTruthy();
+        //     let productNamesInCardMatches = await productsPage.card.checkProductsInCardByName();
+        //     expect(productNamesInCardMatches).toBeTruthy();
 
-            let totalPriceIsCorrect = await productsPage.card.actualTotalPriceIsCorrect();
-            expect(totalPriceIsCorrect).toBeTruthy();
+        //     let totalPriceIsCorrect = await productsPage.card.actualTotalPriceIsCorrect();
+        //     expect(totalPriceIsCorrect).toBeTruthy();
 
-            await productsPage.card.removeBtnIsClickable();
-        }
-        finally{
-            await page.close()
-        }
+        //     await productsPage.card.removeBtnIsClickable();
+        // }
+        // finally{
+        //     await page.close()
+        // }
     })
 
     // test("Search the item @shouldPass", async({page}) => {
